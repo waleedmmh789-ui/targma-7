@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>سياسة الخصوصية — عبقري الترجمة (SubGenius)</title>
+<style>
+  :root { --bg:#ffffff; --fg:#1b1b2f; --muted:#5b5b73; --card:#f4f3fb; --accent:#6c5ce7; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#0f0f1e; --fg:#f2f2f8; --muted:#b0b0c0; --card:#1a1a2e; --accent:#a29bfe; }
+  }
+  body { margin:0; background:var(--bg); color:var(--fg); font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Naskh Arabic",sans-serif; line-height:1.8; }
+  main { max-width:760px; margin:0 auto; padding:24px 18px 64px; }
+  h1 { font-size:1.6rem; margin:0 0 4px; }
+  h2 { font-size:1.15rem; margin-top:28px; color:var(--accent); }
+  .meta { color:var(--muted); font-size:.9rem; }
+  .card { background:var(--card); border-radius:14px; padding:14px 16px; margin:14px 0; }
+  a { color:var(--accent); }
+  ul { padding-inline-start:22px; }
+  hr { border:0; border-top:1px solid var(--muted); opacity:.3; margin:40px 0; }
+  .en { direction:ltr; text-align:left; }
+</style>
+</head>
+<body>
+<main>
+
+<nav class="meta"><a href="#ar">العربية</a> · <a href="#en">English</a></nav>
+
+<section id="ar">
+<h1>سياسة الخصوصية — عبقري الترجمة (SubGenius)</h1>
+<p class="meta">آخر تحديث: 20 نوفمبر 2026</p>
+
+<p>تشرح هذه السياسة كيف يتعامل تطبيق «عبقري الترجمة» (ويُسمّى أيضاً SubGenius) مع بياناتك. أهم ما فيها: <strong>التطبيق لا يرفع فيديوهاتك ولا صوتك إلى أي خادم</strong>، ولا يملك المطوّر خوادم لجمع بيانات المستخدمين. لكن في وضع الترجمة «أونلاين» يُرسل <strong>النص المستخرج فقط</strong> إلى خدمات ترجمة خارجية كما هو موضّح أدناه.</p>
+
+<h2>1. ما الذي يعالجه التطبيق على جهازك</h2>
+<ul>
+  <li><strong>الفيديو الذي تختاره:</strong> يُنسخ مؤقتاً إلى مساحة التطبيق الخاصة على جهازك لمعالجته (ضغط، استخراج الصوت، حرق الترجمة). لا يُرفع إلى أي خادم.</li>
+  <li><strong>الصوت والنص المستخرج:</strong> يُستخرج الصوت ويُحوَّل إلى نص على جهازك بواسطة نماذج Vosk أو Whisper بعد تنزيلها.</li>
+  <li><strong>الفيديو الناتج:</strong> يُحفظ في مجلد Movies/SubGenius في معرض جهازك.</li>
+  <li><strong>سجل المشاريع:</strong> يحفظ التطبيق محلياً على جهازك اسم المشروع ومعرّف الفيديو الناتج واللغات وحالة المشروع، لتعرضها في شاشة «مشاريعي». يمكنك حذف أي مشروع من التطبيق.</li>
+  <li><strong>إعدادات بسيطة:</strong> مثل عنوان خادم Lingva المخصص إن أدخلته، وتُحفظ محلياً.</li>
+  <li><strong>الملفات المؤقتة:</strong> تُحذف بعد انتهاء المعالجة أو عند فتح التطبيق مجدداً.</li>
+</ul>
+
+<h2>2. متى يتصل التطبيق بالإنترنت</h2>
+<div class="card">
+<p><strong>أ) تنزيل النماذج:</strong> عند طلبك تنزيل نموذج التعرف على الكلام يتصل التطبيق بـ <code>alphacephei.com</code> (نماذج Vosk) أو <code>huggingface.co</code> (نماذج Whisper). قد ترى هذه الجهات عنوان IP الخاص بك ومعلومات تقنية عن الطلب، ولا نرسل لها أي محتوى من فيديوهاتك.</p>
+<p><strong>ب) الترجمة دون إنترنت (ML Kit):</strong> تُنزَّل نماذج اللغات من خدمات Google عند أول استخدام لكل لغة، وبعدها تتم الترجمة على جهازك.</p>
+<p><strong>ج) الترجمة «أونلاين مجاني» (اختيارية):</strong> إذا اخترت هذا الوضع يُرسل <strong>نص الترجمة المستخرج من الفيديو</strong> (وليس الفيديو أو الصوت) مع رمزَي اللغتين إلى خدمات خارجية: <strong>Lingva</strong> (خادم عام أو خادم تحدده أنت، وهو يمرّر الطلب إلى Google Translate) ثم <strong>MyMemory</strong> عند الحاجة. قد يحتوي النص على معلومات شخصية إن وردت في كلام الفيديو، وتخضع معالجته لسياسات تلك الجهات. <strong>للحيلولة دون إرسال أي نص، اختر «بدون إنترنت (ML Kit)» في شاشة الترجمة.</strong></p>
+<p><strong>د) الدبلجة الصوتية:</strong> تتم بمحرك تحويل النص إلى كلام (TTS) المثبّت على هاتفك. أغلب الأصوات تعمل محلياً، لكن بعض الأصوات (المكتوب بجانبها «يحتاج إنترنت») قد يرسل فيها مزوّد الصوت (مثل Google) النص إلى خوادمه. اختر صوتاً محلياً لتفادي ذلك.</p>
+<p><strong>هـ) Gemini AI (اختياري):</strong> إذا اخترت هذا المحرك في شاشة الترجمة وأدخلت مفتاح API الخاص بك، يُرسل <strong>النص المستخرج فقط</strong> إلى خوادم Google (Gemini API) للتصحيح أو الترجمة وفق <a href="https://policies.google.com/privacy">سياسة Google</a>. يُحفظ المفتاح مشفّراً على جهازك فقط (Android Keystore) ولا يُرسل إلا إلى Google، ويمكنك حذفه بمسح الخانة.</p>
+</div>
+
+<h2>3. ما الذي لا نفعله</h2>
+<ul>
+  <li>لا نملك خوادم تجمع بياناتك، ولا نطلب منك إنشاء حساب.</li>
+  <li>لا نعرض إعلانات ولا نستخدم أدوات تحليلات أو تتبّع داخل التطبيق.</li>
+  <li>لا نبيع بياناتك ولا نشاركها لأغراض تسويقية.</li>
+  <li>لا يطلب التطبيق صلاحيات الكاميرا أو الميكروفون أو الموقع أو جهات الاتصال أو الوصول العام للملفات. يستخدم منتقي ملفات النظام لاختيار الفيديو، وصلاحية الإنترنت فقط.</li>
+</ul>
+
+<h2>4. جهات خارجية قد تعالج بيانات</h2>
+<ul>
+  <li><strong>Google</strong> (ML Kit وخدمات Google Play وGoogle Translate عبر Lingva): <a href="https://policies.google.com/privacy">سياسة الخصوصية</a>.</li>
+  <li><strong>MyMemory</strong> (Translated): <a href="https://mymemory.translated.net/doc/">mymemory.translated.net</a>.</li>
+  <li><strong>Hugging Face</strong>: <a href="https://huggingface.co/privacy">huggingface.co/privacy</a>.</li>
+  <li><strong>Alphacephei (Vosk)</strong>: <a href="https://alphacephei.com/vosk/">alphacephei.com/vosk</a>.</li>
+  <li><strong>خادم Lingva الذي قد تحدده بنفسك:</strong> مسؤولية سياسته على مشغّله.</li>
+</ul>
+<p>قد يوفّر متجر Google Play نفسه بيانات تقنية عن الأعطال والأداء للمطوّر وفق سياسات Google.</p>
+
+<h2>5. مدة الاحتفاظ وحذف البيانات</h2>
+<p>بياناتك محفوظة على جهازك فقط. يمكنك حذف المشاريع من شاشة «مشاريعي»، وحذف الفيديوهات الناتجة من معرض جهازك، وحذف النماذج والبيانات بإزالة التطبيق أو مسح بياناته من إعدادات النظام. لا توجد بيانات لديّ على خوادم لأحذفها. ولحذف بيانات لدى جهات خارجية (مثل سجلات خوادم الترجمة) تواصل معها مباشرة.</p>
+
+<h2>6. الأطفال</h2>
+<p>التطبيق غير موجّه للأطفال دون 13 عاماً، ولا نجمع عمداً أي بيانات منهم.</p>
+
+<h2>7. الأمان</h2>
+<p>تتم المعالجة محلياً قدر الإمكان، وتتم جميع اتصالات الشبكة عبر HTTPS. لا يوجد نظام آمن بالكامل، فننصحك بعدم استخدام وضع الترجمة أونلاين لمحتوى حساس.</p>
+
+<h2>8. حقوق المستخدم</h2>
+<p>بما أنني لا أجمع بيانات شخصية على خوادم، فبياناتك تحت سيطرتك الكاملة على جهازك. إن كانت لديك أسئلة أو طلبات تتعلق بالخصوصية فتواصل معي عبر البريد أدناه.</p>
+
+<h2>9. التغييرات على هذه السياسة</h2>
+<p>قد أحدّث هذه السياسة عند إضافة ميزات جديدة، وسيظهر تاريخ آخر تحديث أعلى الصفحة.</p>
+
+<h2>10. الدعم والتواصل</h2>
+<div class="card">
+<p>للدعم أو أي استفسار عن الخصوصية: <a href="mailto:waleedmmh789@gmail.com?subject=دعم%20عبقري%20الترجمة">waleedmmh789@gmail.com</a></p>
+</div>
+</section>
+
+<hr>
+
+<section id="en" class="en" lang="en" dir="ltr">
+<h1>Privacy Policy — SubGenius (عبقري الترجمة)</h1>
+<p class="meta">Last updated: November 20, 2026</p>
+
+<p>This policy explains how the SubGenius app handles your data. In short: <strong>the app does not upload your videos or audio to any server</strong>, and the developer operates no servers that collect user data. However, if you choose the <strong>online translation</strong> mode, the <strong>extracted subtitle text only</strong> is sent to third-party translation services, as described below.</p>
+
+<h2>1. What the app processes on your device</h2>
+<ul>
+  <li><strong>The video you select:</strong> temporarily copied to the app's private storage for processing (compression, audio extraction, subtitle burning). It is not uploaded.</li>
+  <li><strong>Audio and transcript:</strong> audio is extracted and converted to text on-device using Vosk or Whisper models after you download them.</li>
+  <li><strong>Output video:</strong> saved to Movies/SubGenius in your device gallery.</li>
+  <li><strong>Project history:</strong> stored locally: project name, output video reference, languages and status, shown in "My projects". You can delete any project in the app.</li>
+  <li><strong>Simple settings:</strong> such as a custom Lingva server URL if you enter one, stored locally.</li>
+  <li><strong>Temporary files</strong> are deleted after processing or the next time the app starts.</li>
+</ul>
+
+<h2>2. When the app uses the internet</h2>
+<div class="card">
+<p><strong>a) Model downloads:</strong> when you download a speech-recognition model, the app connects to <code>alphacephei.com</code> (Vosk) or <code>huggingface.co</code> (Whisper). Those parties may see your IP address and technical request data. No content from your videos is sent.</p>
+<p><strong>b) Offline translation (ML Kit):</strong> language models are downloaded from Google services on first use of each language; translation then runs on your device.</p>
+<p><strong>c) Optional "free online" translation:</strong> if you select this mode, <strong>the subtitle text extracted from your video</strong> (not the video or audio) and the two language codes are sent to external services: <strong>Lingva</strong> (a public server or one you specify, which relays requests to Google Translate), then <strong>MyMemory</strong> if needed. The text may contain personal information if it was spoken in the video, and its processing is governed by those providers' policies. <strong>To avoid sending any text, choose "Offline (ML Kit)" on the translation screen.</strong></p>
+<p><strong>d) Voice dubbing:</strong> done with the text-to-speech (TTS) engine installed on your phone. Most voices work on-device, but some voices (marked "needs internet") may send the text to the voice provider (such as Google). Choose a local voice to avoid this.</p>
+<p><strong>e) Gemini AI (optional):</strong> if you select this engine on the translation screen and enter your own API key, <strong>only the extracted text</strong> is sent to Google servers (Gemini API) for correction or translation under <a href="https://policies.google.com/privacy">Google's policy</a>. The key is stored encrypted on your device only (Android Keystore) and is sent only to Google; you can delete it by clearing the field.</p>
+</div>
+
+<h2>3. What we do not do</h2>
+<ul>
+  <li>We run no servers collecting your data and require no account.</li>
+  <li>The app shows no ads and uses no analytics or tracking tools.</li>
+  <li>We do not sell your data or share it for marketing.</li>
+  <li>The app does not request camera, microphone, location, contacts or broad file access permissions. It uses the system file picker to select a video, plus the Internet permission.</li>
+</ul>
+
+<h2>4. Third parties that may process data</h2>
+<ul>
+  <li><strong>Google</strong> (ML Kit, Google Play services, Google Translate via Lingva): <a href="https://policies.google.com/privacy">Privacy Policy</a>.</li>
+  <li><strong>MyMemory</strong> (Translated): <a href="https://mymemory.translated.net/doc/">mymemory.translated.net</a>.</li>
+  <li><strong>Hugging Face</strong>: <a href="https://huggingface.co/privacy">huggingface.co/privacy</a>.</li>
+  <li><strong>Alphacephei (Vosk)</strong>: <a href="https://alphacephei.com/vosk/">alphacephei.com/vosk</a>.</li>
+  <li><strong>A custom Lingva server you may configure:</strong> its operator is responsible for its policy.</li>
+</ul>
+<p>Google Play itself may provide the developer with technical crash and performance data under Google's policies.</p>
+
+<h2>5. Retention and deletion</h2>
+<p>Your data stays on your device. You can delete projects from "My projects", delete output videos from your gallery, and remove models and data by uninstalling the app or clearing its data in system settings. I hold no data on servers to delete. To request deletion of data held by third parties (for example translation server logs), contact them directly.</p>
+
+<h2>6. Children</h2>
+<p>The app is not directed to children under 13 and we do not knowingly collect data from them.</p>
+
+<h2>7. Security</h2>
+<p>Processing is done locally wherever possible and all network connections use HTTPS. No system is perfectly secure, so we advise against using online translation for sensitive content.</p>
+
+<h2>8. Your rights</h2>
+<p>Because I do not collect personal data on servers, your data remains under your control on your device. For any privacy question or request, contact me at the email below.</p>
+
+<h2>9. Changes to this policy</h2>
+<p>I may update this policy when features change. The last-updated date appears at the top.</p>
+
+<h2>10. Support and contact</h2>
+<div class="card">
+<p>For support or privacy questions: <a href="mailto:waleedmmh789@gmail.com?subject=SubGenius%20support">waleedmmh789@gmail.com</a></p>
+</div>
+</section>
+
+</main>
+</body>
+</html>
