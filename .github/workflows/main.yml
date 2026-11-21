@@ -1,0 +1,68 @@
+name: Build Android Debug APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # إن وُجد ملف ZIP في جذر المستودع يُفك داخل project/، وإلا يُستخدم محتوى المستودع نفسه
+      - name: Extract ZIP project
+        run: |
+          mkdir -p project
+          ZIP=$(ls -1 *.zip 2>/dev/null | head -n 1 || true)
+          if [ -n "$ZIP" ]; then
+            echo "Extracting $ZIP"
+            unzip -q -o "$ZIP" -d project
+          else
+            echo "No zip found; using repository files"
+            rsync -a --exclude project --exclude .git ./ project/
+          fi
+
+      # يبحث عن مجلد مشروع Gradle (حتى لو كان داخل مجلد فرعي بعد فك الضغط)
+      - name: Locate Gradle project
+        id: loc
+        run: |
+          SETTINGS=$(find project -maxdepth 3 \( -name settings.gradle.kts -o -name settings.gradle \) | head -n 1)
+          if [ -z "$SETTINGS" ]; then
+            echo "::error::لم يتم العثور على settings.gradle داخل المشروع. تأكد أن الـ ZIP يحتوي على مشروع أندرويد كامل."
+            find project -maxdepth 3 | head -n 50
+            exit 1
+          fi
+          DIR=$(dirname "$SETTINGS")
+          echo "Project dir: $DIR"
+          echo "dir=$DIR" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Accept Android SDK licenses
+        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+
+      # Gradle يُثبَّت هنا، فلا حاجة لملف gradlew
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+
+      - name: Build Debug APK
+        working-directory: ${{ steps.loc.outputs.dir }}
+        run: |
+          if [ -f ./gradlew ]; then
+            chmod +x ./gradlew
+            ./gradlew :app:assembleDebug --no-daemon --stacktrace
+          else
+            gradle :app:assembleDebug --no-daemon --stacktrace
+          fi
+
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-apk
+          path: ${{ steps.loc.outputs.dir }}/app/build/outputs/apk/debug/*.apk
