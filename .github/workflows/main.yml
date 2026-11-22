@@ -1,114 +1,99 @@
-name: Build Android Debug APK
+name: Build SubGenius
 
 on:
-workflow_dispatch:
-push:
-branches: [ main ]
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+
+permissions:
+  contents: write
 
 jobs:
-build:
-runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
 
-steps:
-  - name: Checkout repository
-    uses: actions/checkout@v4
+      - name: Locate project (unzip if needed)
+        run: |
+          F=$(find . -maxdepth 3 -name settings.gradle.kts -not -path './.git/*' | head -1)
+          if [ -z "$F" ]; then
+            Z=$(find . -maxdepth 2 -name 'SubGenius-Project-Complete.zip' -not -path './.git/*' | head -1)
+            [ -z "$Z" ] && Z=$(find . -maxdepth 2 -name '*.zip' -not -path './.git/*' | head -1)
+            if [ -n "$Z" ]; then
+              echo "Unzipping $Z"
+              unzip -oq "$Z" -d _project
+              F=$(find _project -maxdepth 3 -name settings.gradle.kts | head -1)
+            fi
+          fi
+          if [ -z "$F" ]; then
+            echo "::error::Project not found. Upload SubGenius-Project-Complete.zip to the repo root."
+            exit 1
+          fi
+          D=$(dirname "$F")
+          [ -f "$D/app/build.gradle.kts" ] || { echo "::error::app/build.gradle.kts missing in $D"; exit 1; }
+          echo "PROJECT_DIR=$D" >> "$GITHUB_ENV"
+          echo "Project found in: $D"
 
-  - name: Locate or extract Android project
-    id: loc
-    shell: bash
-    run: |
-      set -euo pipefail
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-      mkdir -p project
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
 
-      # أولاً: هل يوجد مشروع Gradle مباشر داخل المستودع؟
-      SETTINGS=$(find . \
-        -path './.git' -prune -o \
-        -path './project' -prune -o \
-        -type f \( -name settings.gradle.kts -o -name settings.gradle \) \
-        -print -quit)
+      - name: Prepare signing key
+        working-directory: ${{ env.PROJECT_DIR }}
+        env:
+          KS_B64: ${{ secrets.KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.KEYSTORE_PASSWORD }}
+          KS_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KS_KEYPASS: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ -n "$KS_B64" ]; then
+            echo "$KS_B64" | base64 -d > app/release.keystore
+            {
+              echo "KEYSTORE_PASSWORD=$KS_PASS"
+              echo "KEY_ALIAS=$KS_ALIAS"
+              echo "KEY_PASSWORD=${KS_KEYPASS:-$KS_PASS}"
+            } >> "$GITHUB_ENV"
+          else
+            keytool -genkeypair -keystore app/release.keystore -storepass subgenius-ci -keypass subgenius-ci \
+              -alias subgenius -keyalg RSA -keysize 2048 -validity 10000 \
+              -dname "CN=SubGenius, O=SubGenius, C=US"
+            {
+              echo "KEYSTORE_PASSWORD=subgenius-ci"
+              echo "KEY_ALIAS=subgenius"
+              echo "KEY_PASSWORD=subgenius-ci"
+            } >> "$GITHUB_ENV"
+            echo "::warning::Temporary signing key used (not valid for Google Play)"
+          fi
+          echo "KEYSTORE_FILE=release.keystore" >> "$GITHUB_ENV"
 
-      # ثانياً: إن لم يوجد، ابحث عن ملف ZIP في أي مجلد
-      if [ -z "$SETTINGS" ]; then
-        ZIP=$(find . \
-          -path './.git' -prune -o \
-          -path './project' -prune -o \
-          -type f -iname '*.zip' -print | \
-          grep -i 'subgenius' | head -n 1 || true)
+      - name: Build debug APK + release APK + AAB
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: gradle :app:assembleDebug :app:assembleRelease :app:bundleRelease --no-daemon --stacktrace
 
-        if [ -z "$ZIP" ]; then
-          ZIP=$(find . \
-            -path './.git' -prune -o \
-            -path './project' -prune -o \
-            -type f -iname '*.zip' -print -quit)
-        fi
+      - name: Collect outputs
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: |
+          mkdir -p dist
+          cp app/build/outputs/apk/debug/*.apk dist/SubGenius-debug.apk
+          cp app/build/outputs/apk/release/*.apk dist/SubGenius-release.apk
+          cp app/build/outputs/bundle/release/*.aab dist/SubGenius-release.aab
+          ls -lh dist
 
-        if [ -z "$ZIP" ]; then
-          echo "::error::لم يتم العثور على مشروع Gradle أو ملف ZIP للمشروع. ارفع ملفات المشروع كاملة أو ملف ZIP إلى GitHub."
-          echo "الملفات الموجودة في المستودع:"
-          find . -path './.git' -prune -o -type f -print | head -n 100
-          exit 1
-        fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SubGenius-builds
+          path: ${{ env.PROJECT_DIR }}/dist/*
 
-        echo "Extracting: $ZIP"
-        unzip -q -o "$ZIP" -d project
-
-        SETTINGS=$(find project \
-          -type f \( -name settings.gradle.kts -o -name settings.gradle \) \
-          -print -quit)
-      fi
-
-      if [ -z "$SETTINGS" ]; then
-        echo "::error::تم العثور على الملفات، لكن لم يتم العثور على settings.gradle أو settings.gradle.kts داخل المشروع."
-        find project -type f | head -n 100
-        exit 1
-      fi
-
-      DIR=$(dirname "$SETTINGS")
-      echo "Gradle project directory: $DIR"
-
-      if [ ! -f "$DIR/app/build.gradle" ] && \
-         [ ! -f "$DIR/app/build.gradle.kts" ]; then
-        echo "::error::لم يتم العثور على app/build.gradle أو app/build.gradle.kts بجانب مشروع Gradle."
-        find "$DIR" -maxdepth 3 -type f | head -n 100
-        exit 1
-      fi
-
-      echo "dir=$DIR" >> "$GITHUB_OUTPUT"
-
-  - name: Set up Java
-    uses: actions/setup-java@v4
-    with:
-      java-version: '17'
-      distribution: temurin
-
-  - name: Set up Gradle
-    uses: gradle/actions/setup-gradle@v4
-    with:
-      gradle-version: '8.9'
-
-  - name: Accept Android SDK licenses
-    shell: bash
-    run: |
-      yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses \
-        > /dev/null || true
-
-  - name: Build Debug APK
-    working-directory: ${{ steps.loc.outputs.dir }}
-    shell: bash
-    run: |
-      set -euo pipefail
-
-      if [ -f ./gradlew ]; then
-        chmod +x ./gradlew
-        ./gradlew :app:assembleDebug --no-daemon --stacktrace
-      else
-        gradle :app:assembleDebug --no-daemon --stacktrace
-      fi
-
-  - name: Upload Debug APK
-    uses: actions/upload-artifact@v4
-    with:
-      name: subgenius-debug-apk
-      path: ${{ steps.loc.outputs.dir }}/app/build/outputs/apk/debug/*.apk
-      if-no-files-found: error
+      - name: Publish GitHub Release (on v* tags)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.PROJECT_DIR }}/dist/*
